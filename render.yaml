@@ -14,13 +14,17 @@ services:
       - key: JWT_SECRET
         sync: false
 
-staticSites:
-  # FRONTEND SERVICE (Static Site)
-  - name: taxi-frontend
+  # FRONTEND SERVICE (Web Service - Serving Static Files)
+  # Changed to "web" type to avoid schema issues with "staticSites"
+  - type: web
+    name: taxi-frontend
+    env: node
     rootDir: frontend
     buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
+    startCommand: npx serve -s dist -l 10000
     envVars:
+      - key: PORT
+        value: 10000
       - key: VITE_API_URL
         fromService:
           type: web
