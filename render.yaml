@@ -1,0 +1,29 @@
+services:
+  # BACKEND SERVICE
+  - type: web
+    name: taxi-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npm run build # Run build if prisma generate is needed, usually npm install runs postinstall
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false # User must provide this
+      - key: JWT_SECRET
+        sync: false # User must provide this
+
+  # FRONTEND SERVICE
+  - type: static
+    name: taxi-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: taxi-backend
+          property: url

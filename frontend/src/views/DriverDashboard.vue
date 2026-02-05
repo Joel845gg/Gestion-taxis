@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '../config/api';
 
 export default {
   data() {
@@ -90,10 +90,6 @@ export default {
       if (this.polling) clearInterval(this.polling);
   },
   methods: {
-    getHeaders() {
-        const token = localStorage.getItem('token');
-        return { headers: { Authorization: `Bearer ${token}` } };
-    },
     async checkAvailability() {
          const user = JSON.parse(localStorage.getItem('user'));
          // Ideally fetch fresh user data, but for now we assume session is fresh enough or set default
@@ -102,7 +98,7 @@ export default {
     async toggleAvailability() {
         const newStatus = !this.isAvailable;
         try {
-            await axios.patch('http://localhost:3000/api/drivers/availability', { isAvailable: newStatus }, this.getHeaders());
+            await api.patch('/api/drivers/availability', { isAvailable: newStatus });
             this.isAvailable = newStatus;
             
             // Update local user to persist state across refreshes locally (optional but good UX)
@@ -116,7 +112,7 @@ export default {
     },
     async loadTrips() {
       try {
-          const res = await axios.get('http://localhost:3000/api/trips', this.getHeaders());
+          const res = await api.get('/api/trips');
           this.trips = res.data;
       } catch (err) {
           if (err.response?.status === 401) {
@@ -127,7 +123,7 @@ export default {
     },
     async updateStatus(tripId, status) {
         try {
-            await axios.patch(`http://localhost:3000/api/trips/${tripId}/status`, { status }, this.getHeaders());
+            await api.patch(`/api/trips/${tripId}/status`, { status });
             this.loadTrips();
         } catch (err) {
             alert('Error actualizando estado');

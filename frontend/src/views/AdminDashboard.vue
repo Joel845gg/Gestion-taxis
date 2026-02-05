@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '../config/api';
 
 export default {
   data() {
@@ -97,15 +97,11 @@ export default {
     this.loadData();
   },
   methods: {
-    getHeaders() {
-        const token = localStorage.getItem('token');
-        return { headers: { Authorization: `Bearer ${token}` } };
-    },
     async loadData() {
         try {
             const [usersRes, tripsRes] = await Promise.all([
-                axios.get('http://localhost:3000/admin/users', this.getHeaders()),
-                axios.get('http://localhost:3000/admin/trips', this.getHeaders())
+                api.get('/admin/users'),
+                api.get('/admin/trips')
             ]);
             this.users = usersRes.data;
             this.trips = tripsRes.data;
@@ -120,9 +116,9 @@ export default {
         if (!confirm(`¿Confirma cambiar el rol de ${user.name} a ${newRole}?`)) return;
         
         try {
-            await axios.patch(`http://localhost:3000/admin/users/${user.id}/role`, {
+            await api.patch(`/admin/users/${user.id}/role`, {
                 role: newRole
-            }, this.getHeaders());
+            });
             this.loadData();
         } catch (err) {
             alert('Error al cambiar rol');

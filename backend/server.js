@@ -53,5 +53,5 @@ app.get('/admin/users', authMiddleware, requireRole('ADMIN'), adminCtrl.getAllUs
 app.get('/admin/trips', authMiddleware, requireRole('ADMIN'), adminCtrl.getAllTrips);
 app.patch('/admin/users/:id/role', authMiddleware, requireRole('ADMIN'), adminCtrl.updateUserRole);
 
-const PORT = 3000;
-app.listen(PORT, () => console.log('Clean Architecture Backend running on port 3000'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Clean Architecture Backend running on port ${PORT}`));

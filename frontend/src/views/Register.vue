@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '../config/api';
 
 export default {
   data() {
@@ -49,7 +49,7 @@ export default {
   methods: {
     async register() {
       try {
-        await axios.post('http://localhost:3000/api/register', {
+        await api.post('/api/register', {
           name: this.name,
           email: this.email,
           password: this.password,

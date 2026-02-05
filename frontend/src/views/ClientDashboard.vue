@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '../config/api';
 import LocationInput from '../components/LocationInput.vue';
 import LeafletMap from '../components/LeafletMap.vue';
 
@@ -114,16 +114,12 @@ export default {
       if (this.polling) clearInterval(this.polling);
   },
   methods: {
-    getHeaders() {
-        const token = localStorage.getItem('token');
-        return { headers: { Authorization: `Bearer ${token}` } };
-    },
     async searchDrivers() {
         if (!this.origin || !this.destination) return alert('Ingresa origen y destino');
         this.loadingDrivers = true;
         try {
             await new Promise(r => setTimeout(r, 1000));
-            const res = await axios.get('http://localhost:3000/api/drivers/available', this.getHeaders());
+            const res = await api.get('/api/drivers/available');
             this.drivers = res.data;
             if (this.drivers.length === 0) alert('No hay conductores disponibles.');
         } catch (err) {
@@ -142,12 +138,12 @@ export default {
     async requestTrip(driverId) {
       if (!this.fare || this.fare < 1) return alert('Ingresa una tarifa válida');
       try {
-          const res = await axios.post('http://localhost:3000/api/trips', {
+          const res = await api.post('/api/trips', {
             origin: this.origin,
             destination: this.destination,
             driverId,
             fare: this.fare
-          }, this.getHeaders());
+          });
           
           this.trips.unshift(res.data);
           this.origin = '';
@@ -160,7 +156,7 @@ export default {
     },
     async loadTrips() {
       try {
-          const res = await axios.get('http://localhost:3000/api/trips', this.getHeaders());
+          const res = await api.get('/api/trips');
           this.trips = res.data.slice(0, 10); // Show last 10
       } catch (err) {}
     }
