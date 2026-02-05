@@ -26,7 +26,4 @@ services:
       - key: PORT
         value: 10000
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: taxi-backend
-          property: url
+        sync: false # User must provide this after backend is deployed
